@@ -12,11 +12,17 @@
 .endmacro
 
 setup:
+    clr R0
+
     ; Port Setup
     sbi DDRB, 0
     sbi DDRB, 1
     cbi PORTB, 0
     cbi PORTB, 1
+
+    ; Basic USART setup
+    sts UCSR0A, R0
+    sts UBRR0H, R0
 
 frame:
     ; Long Sync
@@ -25,14 +31,12 @@ frame:
 
         ; 30us Long VSync
         cbi PORTB, 0 ; Sync Level
-        wait 199
+        wait 159
         nop
 
         ; 2us Wait
         sbi PORTB, 0 ; Black Level
-        wait 11
-        nop
-        nop
+        wait 9
         dec R17
     brne long_sync
 
@@ -44,13 +48,11 @@ frame:
 
             ; 2us Short VSync
             cbi PORTB, 0 ; Sync Level
-            wait 12
-            nop
-            nop
+            wait 10
 
             ; 30us Wait
             sbi PORTB, 0 ; Black Level
-            wait 198
+            wait 158
             nop
             dec R17
         brne short_sync_loop
@@ -62,16 +64,15 @@ frame:
     .macro overscan
         ldi R17, @0
         overscan_loop:
-            ; 4us HSync
+            ; 4,7us HSync
             cbi PORTB, 0 ; Sync Level
-            wait 30
-            nop
+            wait 24
             nop
 
             ; Draw blank line (59,3us)
             sbi PORTB, 0
             wait 255
-            wait 138
+            wait 59
             nop
             nop
             dec R17
@@ -80,33 +81,29 @@ frame:
 
     overscan 30
 
-
     ; Active Area (260 lines)
     ldi R24, 4
     ldi R25, 1
     active_area:
-
         ; 4,7us HSync
         cbi PORTB, 0 ; Sync Level
-        wait 30
-        nop
+        wait 24
         nop
 
         ; 5,7 us back porch + 3 us overscan
         sbi PORTB, 0 ; Black Level
-        wait 57
-        nop
+        wait 46
 
         ; Active Area (45,95 us)
         sbi PORTB, 1 ; White
-        wait 255
-        wait 50
-        nop
+        wait 244
         nop
 
         ; 3 us overscan + 1,65 front porch
         cbi PORTB, 1 ; Black Level
-        wait 29
+        wait 22
+        nop
+        nop
         sbiw R24, 1
     brne active_area
 
