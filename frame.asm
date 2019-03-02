@@ -1,17 +1,6 @@
 ; PAL Frame Generation
 ; Reference: http://blog.retroleum.co.uk/electronics-articles/pal-tv-timing-and-voltages/
 
-; Send Empty Char Sequency (16 cycles)
-.macro send_black
-    ldi R17, @0
-    empty_bytes:
-        sts UDR0, R0
-        delay 9
-        delay_2
-        dec R17
-    brne empty_bytes
-.endmacro
-
 frame:
     ; 5 Long Syncs
     long_sync 5
@@ -22,9 +11,11 @@ frame:
     ; VSync + Top Overscan (16 + 16 lines)
     overscan 32
 
+    ; Set Video Memory Map Location
+    ldi XH, 0x02
+    ldi XL, 0x60
+
     ; Active Area (256 lines)
-    ldi R24, 0
-    ldi R25, 0
     active_area:
         ; 4.6875us HSync (75 cycles)
         cbi PORTD, PORTD5 ; Sync Level
@@ -34,11 +25,16 @@ frame:
         ; 5,7us back porch + 3,1125us overscan (141 cycles)
         sbi PORTD, PORTD5 ; Black Level
 
-        ; Set char line counter
-        mov R18, R24
-        andi R18, 7
+        delay 111
 
-        delay 78
+        ; Set char line counter
+        dec ZH
+        andi ZH, 7
+        cpi ZH, 7
+        breq continue ; FIXME: Two or Three Cycles
+            sbiw XL, 45
+        continue:
+        ori ZH, 8
 
         ; Setup USART SPI Mode
         sts UBRR0H, R0
@@ -51,25 +47,24 @@ frame:
         sts UCSR0B, R16
         sts UBRR0H, R0
         sts UBRR0L, R0
-        delay 9
-        send_black 2
+        delay 3
 
         ; 45us Active Area (720 cycles)
         ldi R17, 45
         send_stripes:
+            ld ZL, X+
+            lpm R1, Z
             sts UDR0, R1
-            eor R1, R2
-            delay 9
-            delay_1
+            delay 6
             dec R17
         brne send_stripes
 
         ; 3.85us overscan + 1.65us front porch (88 cycles)
         sts UCSR0B, R0
         delay 81
-        adiw R24, 1 ; NOTE: Uses 2 cycles
-        cpi R25, 1
-    brne active_area
+        delay_2
+        cpi XH, 8
+    brlt active_area
 
     ; Bottom Overscan (16 Lines)
     overscan 16

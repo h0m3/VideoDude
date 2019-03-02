@@ -41,7 +41,7 @@
 
         ; 4.6875us HSync (75 cycles)
         cbi PORTD, PORTD5 ; Sync Level
-        delay 72
+        delay 74
         delay_1
 
         ; 59.3us Draw blank line (949 cycles)
