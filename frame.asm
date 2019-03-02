@@ -28,7 +28,7 @@ frame:
         delay 111
 
         ; Set char line counter
-        dec ZH
+        inc ZH
         andi ZH, 7
         cpi ZH, 7
         breq continue ; FIXME: Two or Three Cycles
@@ -40,7 +40,7 @@ frame:
         sts UBRR0H, R0
         sts UBRR0L, R0
         sts UCSR0A, R0
-        ldi R16, (1 << UMSEL01) | (1 << UMSEL00)
+        ldi R16, (1 << UMSEL01) | (1 << UMSEL00) | (1 << UDORD0)
         sts UCSR0C, R16
         ldi R16, (1 << TXEN0)
         sts UDR0, R0

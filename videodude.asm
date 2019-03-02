@@ -24,13 +24,7 @@ setup:
     ; Clear ZH for memory manipulation
     clr ZH
 
-    ; Test
-    ldi R17, 0x22
-    ldi XH, 0x02
-    ldi XL, 0x60
-    insert_char:
-        st X+, R17
-        cpi XH, 8
-    brne insert_char
+    ; Text test
+
 
 .include "frame.asm"

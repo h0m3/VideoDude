@@ -24,9 +24,9 @@ def main():
                 lines[1].append(textline[12:14])
                 lines[0].append(textline[14:])
 
-    newfile = "; Automatically generated file, use charmap.txt and chargen.py\n\ncharmap:"
+    newfile = "; Automatically generated file, use charmap.txt and chargen.py\n\n\n.org 0x0400\n\ncharmap:"
 
-    for line in reversed(range(8)):
+    for line in range(8):
         newfile += "\n; Line %d\n" % line
         for idx, item in enumerate(lines[line]):
             if idx % 2:
