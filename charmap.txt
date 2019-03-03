@@ -1,5 +1,6 @@
 # This is the VideoDude Character Map text file
 # Use https://xantorohara.github.io/led-matrix-editor to create characters
+# Run chargen.py to generate 'charmap.asm'
 #
 
 # NULL

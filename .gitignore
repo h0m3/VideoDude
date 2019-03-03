@@ -1,3 +1,5 @@
 *.cof
 *.hex
 *.obj
+*.pyc
+__pycache__/*
