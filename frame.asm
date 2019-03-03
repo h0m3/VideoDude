@@ -25,12 +25,12 @@ frame:
         ; 5,7us back porch + 3,1125us overscan (141 cycles)
         sbi PORTD, PORTD5 ; Black Level
 
-        delay 111
+        delay 66
+        delay_1
 
         ; Set char line counter
-        inc ZH
+        dec ZH
         andi ZH, 7
-        cpi ZH, 7
         breq continue ; FIXME: Two or Three Cycles
             sbiw XL, 45
         continue:
@@ -47,7 +47,15 @@ frame:
         sts UCSR0B, R16
         sts UBRR0H, R0
         sts UBRR0L, R0
-        delay 3
+
+        ; Send black
+        ldi R17, 3
+        send_blank:
+            sts UDR0, R0
+            delay 9
+            delay_2
+            dec R17
+        brne send_blank
 
         ; 45us Active Area (720 cycles)
         ldi R17, 45

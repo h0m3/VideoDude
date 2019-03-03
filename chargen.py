@@ -25,7 +25,7 @@ def main():
     newfile += "\n.org 0x400\n"
     newfile += "charmap:\n"
 
-    for line in reversed(range(8)):
+    for line in range(8):
         newfile += "\n; Line %d\n" % line
         for idx, item in enumerate(lines[line]):
             if idx % 2:
