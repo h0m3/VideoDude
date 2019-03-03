@@ -13,7 +13,7 @@ frame:
 
     ; Set Video Memory Map Location
     ldi XH, 0x02
-    ldi XL, 0x60
+    ldi XL, 0x8C
 
     ; Active Area (256 lines)
     active_area:
@@ -51,13 +51,13 @@ frame:
 
         ; 45us Active Area (720 cycles)
         ldi R17, 45
-        send_stripes:
+        send_char:
             ld ZL, X+
             lpm R1, Z
             sts UDR0, R1
             delay 6
             dec R17
-        brne send_stripes
+        brne send_char
 
         ; 3.85us overscan + 1.65us front porch (88 cycles)
         sts UCSR0B, R0

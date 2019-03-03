@@ -22,9 +22,15 @@ setup:
     out DDRD, R16
 
     ; Clear ZH for memory manipulation
-    clr ZH
+    ldi ZH, 7
 
     ; Text test
-
+    ; ldi R16, 0x42
+    ldi XH, 0x02
+    ldi XL, 0x5F
+    test_loop:
+        st X+, XL
+        cpi XH, 8
+    brne test_loop
 
 .include "frame.asm"

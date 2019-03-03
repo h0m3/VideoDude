@@ -30,7 +30,7 @@ def main():
         newfile += "\n; Line %d\n" % line
         for idx, item in enumerate(lines[line]):
             if idx % 2:
-                newfile += ".dw 0x%s%s ; 0x%02x and 0x%02x\n" % (lines[line][idx - 1], item, idx - 1, idx)
+                newfile += ".dw 0x%s%s ; 0x%02x and 0x%02x\n" % (item, lines[line][idx - 1], idx, idx - 1)
 
     with open ("charmap.asm", "w") as file:
         file.write(newfile)
