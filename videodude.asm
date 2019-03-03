@@ -21,9 +21,6 @@ setup:
     ldi R16, (1 << PORTD1) | (1 << PORTD4) | (1 << PORTD5)
     out DDRD, R16
 
-    ; Clear ZH for memory manipulation
-    ldi ZH, 7
-
     ; Text test
     ; ldi R16, 0x42
     ldi XH, 0x02
