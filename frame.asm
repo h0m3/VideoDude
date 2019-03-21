@@ -63,16 +63,27 @@ frame:
             ld ZL, X+
             lpm R1, Z
             sts UDR0, R1
+            ; TODO: Add brightness
             delay 6
             dec R17
         brne send_char
 
         ; 3.85us overscan + 1.65us front porch (88 cycles)
         sts UCSR0B, R0
-        delay 81
-        delay_2
-        cpi XH, 8
-    brlt active_area
+
+        ; Initialize UART Receiver
+        sts UCSR0A, R0
+        ldi R16, (1 << UCSZ01) | (1 << UCSZ00)
+        sts UCSR0C, R16
+        sts UBRR0H, R0
+        ldi R16, 104 ; 9600 Baud
+        sts UBRR0l, R16
+        ldi R16, (1 << RXEN0)
+        sts UCSR0C, R16
+        delay 69
+        delay_1
+        sbrs XH, 3
+    rjmp active_area
 
     ; Bottom Overscan (16 Lines)
     overscan 16

@@ -21,13 +21,25 @@ setup:
     ldi R16, (1 << PORTD1) | (1 << PORTD4) | (1 << PORTD5)
     out DDRD, R16
 
-    ; Text test
-    ; ldi R16, 0x42
+    ; Clear screen
     ldi XH, 0x02
     ldi XL, 0x5F
-    test_loop:
-        st X+, XL
-        cpi XH, 8
-    brne test_loop
+    clear_loop:
+        st X+, R0
+        cpi XH, 9
+    brne clear_loop
+
+    ; Welcome Message
+    ldi XH, 0x02
+    ldi XL, 0x5F
+    ldi ZH, high(info*2)
+    ldi ZL, low(info*2)
+    welcome:
+        lpm R1, Z+
+        st X+, R1
+        cp R1, R0
+    brne welcome
 
 .include "frame.asm"
+
+info: .db "VideoDude v0.1 Alpha", 0, 0
